@@ -1,4 +1,5 @@
 const PORT = process.env.PORT || 3000;
+const path = require("path");
 const express = require("express");
 const multer = require("multer");
 const cookieParser = require("cookie-parser");
@@ -8,9 +9,11 @@ const csv = require("csvtojson");
 // configuration
 const app = express();
 require("dotenv").config();
+app.use(express.static(__dirname + "/public"));
 app.use(cors({ credentials: true, origin: true }));
 app.use(cookieParser());
 app.use(express.json());
+console.log(__dirname);
 
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
