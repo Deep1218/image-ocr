@@ -1,16 +1,1 @@
-<div class="container text-center mt-5">
-  <img [src]="url" alt="img" height="500" />
-  <form (ngSubmit)="onSubmit()">
-    <div class="mb-3">
-      <input
-        type="file"
-        accept="image/*"
-        class="form-control mt-3"
-        id="exampleInputEmail1"
-        aria-describedby="emailHelp"
-        (change)="previewFile($event)"
-      />
-    </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
-  </form>
-</div>
+<router-outlet></router-outlet>
