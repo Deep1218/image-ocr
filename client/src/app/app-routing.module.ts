@@ -1,10 +1,9 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { UploadInvoiceComponent } from './pages/upload-invoice/upload-invoice.component';
 import { InvoiceDetailComponent } from './pages/invoice-detail/invoice-detail.component';
 
-const routes: Routes = [
-  { path: 'invoice-detail', component: InvoiceDetailComponent },
-];
+const routes: Routes = [{ path: '', component: UploadInvoiceComponent },{ path: 'invoice-detail', component: InvoiceDetailComponent }];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
