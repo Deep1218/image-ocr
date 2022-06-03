@@ -5,6 +5,7 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
+import { UploadService } from 'src/app/upload.service';
 
 @Component({
   selector: 'app-invoice-detail',
@@ -12,9 +13,14 @@ import {
   styleUrls: ['./invoice-detail.component.css'],
 })
 export class InvoiceDetailComponent implements OnInit, AfterViewInit {
-  constructor() {}
   @ViewChild('imgCanvas') canvas!: ElementRef;
   invoicePath = 'http://localhost:3000/uploads/invoice.jpg';
+  fileData: any;
+  constructor(private uploadService: UploadService) {
+    this.uploadService.fileData.subscribe((data) => {
+      this.fileData = data;
+    });
+  }
 
   ngOnInit(): void {}
   ngAfterViewInit(): void {

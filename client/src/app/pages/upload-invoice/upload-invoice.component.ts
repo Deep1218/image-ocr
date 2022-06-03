@@ -29,8 +29,6 @@ export class UploadInvoiceComponent implements OnInit {
     console.log(this.selectedFile);
     const formData = new FormData();
     formData.append('invoice', this.selectedFile);
-    this.uploadService.upload(formData).subscribe((data) => {
-      console.log(data);
-    });
+    this.uploadService.upload(formData);
   }
 }
