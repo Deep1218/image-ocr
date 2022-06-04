@@ -3,15 +3,20 @@
     <canvas #imgCanvas (click)="selectBox($event)" class="imgCanvas"></canvas>
   </div>
   <div class="side">
-    <select #selectedOption>
+    <select (change)="onOptionChange($event)" #selectedOption>
       <option *ngFor="let item of optionsList" [value]="item">
         {{ item }}
       </option>
     </select>
     <div class="values">
       <h1>Your Selections</h1>
-      <div class="output">{{ currentOptData }}</div>
+      <div class="output">{{ selectedOptData }}</div>
     </div>
-    <button (click)="onAdd()" class="btn btn-primary" type="button">Add</button>
+    <button (click)="onAdd()" class="btn btn-secondary" type="button">
+      Add
+    </button>
+    <button (click)="onSave()" class="btn btn-primary" type="button">
+      Save
+    </button>
   </div>
 </div>

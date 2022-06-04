@@ -22,26 +22,30 @@ var storage = multer.diskStorage({
     cb(null, file.originalname);
   },
 });
-const upload = multer({ storage });
+const upload = multer({ storage }).single("invoice");
 // var upload = multer({ storage });
 
 // routes
-app.post("/upload", upload.single("invoice"), (req, res) => {
-  console.log(req.file.path);
-  //TODO save img file and process through python...
+app.post("/upload", (req, res) => {
+  upload(req, res, function (err) {
+    if (err) {
+      res.status(500).send({ msg: "can not upload invoice" });
+      return;
+    }
 
-  // res.send({ msg: "ok" });
-  // reading csv, converting to json and sends back response
-  const filePath = "./public/csv/invoice.csv";
-  csv()
-    .fromFile(filePath)
-    .then((jsonObj) => {
-      res.send({
-        msg: "Success",
-        data: jsonObj,
-        invoicePath: req.file.path.slice(7),
+    //TODO save img file and process through python...
+
+    const filePath = "./public/csv/invoice.csv";
+    csv()
+      .fromFile(filePath)
+      .then((jsonObj) => {
+        res.send({
+          msg: "Success",
+          data: jsonObj,
+          invoicePath: req.file.path.slice(7),
+        });
       });
-    });
+  });
 });
 
 // start server on port 3000
