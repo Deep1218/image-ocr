@@ -14,9 +14,7 @@ import { UploadService } from 'src/app/upload.service';
 })
 export class InvoiceDetailComponent implements OnInit, AfterViewInit {
   @ViewChild('imgCanvas') canvas!: ElementRef;
-  @ViewChild('selectedOption') selectedOption!: ElementRef;
   serverUrl = 'http://localhost:3000/';
-  fileData: any;
   error!: string;
 
   optionsList = [
@@ -30,11 +28,15 @@ export class InvoiceDetailComponent implements OnInit, AfterViewInit {
     'Total Amount',
     'Position 1',
   ];
-  // selectedOption = this.optionsList[0];
-  selectedOptData = '';
+  selectedOption = this.optionsList[0];
 
-  optionsData: any = {};
-  boxObj: any[] = [];
+  boxes: any[] = [];
+  config = {
+    canvas_width: 750,
+    canvas_height: 1050,
+    img_width: 750,
+    img_height: 1050,
+  };
 
   constructor(private uploadService: UploadService) {}
 
@@ -42,39 +44,32 @@ export class InvoiceDetailComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     this.uploadService.fileData.subscribe((data: any) => {
       if (!data) return;
-      const canvasSize = {
-        width: 750,
-        height: 1050,
-      };
       let fileUrl = this.serverUrl + data.invoicePath.replace('\\', '/');
       const canvas = this.canvas.nativeElement;
       const ctx = canvas.getContext('2d');
-      canvas.width = canvasSize.width;
-      canvas.height = canvasSize.height;
+      canvas.width = this.config.canvas_width;
+      canvas.height = this.config.canvas_height;
 
       var newImg = new Image();
-
       newImg.onload = () => {
-        var imgHeight = newImg.height;
-        var imgWidth = newImg.width;
+        this.config.img_width = newImg.width;
+        this.config.img_height = newImg.height;
         canvas.style.backgroundImage = 'url(' + fileUrl + ')';
-        const boxes = data.data;
+        this.boxes = data.data
+          .map((box: any) => {
+            return { ...box, tag: 'O' };
+          })
+          .filter((box: any) => box.text != '' && box.text != '—');
 
-        for (let i = 0; i < boxes.length; i++) {
-          const element = boxes[i];
-          if (element.text == '' || element.text == '—') continue;
-          let text = element.text;
-          let left = (canvasSize.width * element.left) / imgWidth;
-          let top = (canvasSize.height * element.top) / imgHeight;
-          let boxWidth = (canvasSize.width * element.width) / imgWidth;
-          let boxHeight = (canvasSize.height * element.height) / imgHeight;
-          this.boxObj.push({ text, top, left, boxWidth, boxHeight });
+        // Draw all boxes on image
+        for (let i = 0; i < this.boxes.length; i++) {
+          const element = this.boxes[i];
+          const { left, top, width, height } = this.sizesConvert(element);
           ctx.beginPath();
-          ctx.rect(left, top, boxWidth, boxHeight);
+          ctx.rect(left, top, width, height);
           ctx.stroke();
         }
       };
-
       newImg.src = fileUrl;
     });
   }
@@ -82,40 +77,116 @@ export class InvoiceDetailComponent implements OnInit, AfterViewInit {
   selectBox(e: any) {
     const clickX = e.offsetX;
     const clickY = e.offsetY;
-    for (let i = 0; i < this.boxObj.length; i++) {
-      const element = this.boxObj[i];
+    for (let i = 0; i < this.boxes.length; i++) {
+      const element = this.boxes[i];
+      const { left, top, width, height } = this.sizesConvert(element);
       if (
-        clickX > element.left &&
-        clickX <= element.left + element.boxWidth &&
-        clickY > element.top &&
-        clickY <= element.top + element.boxHeight
+        clickX > left &&
+        clickX <= left + width &&
+        clickY > top &&
+        clickY <= top + height
       ) {
-        this.selectedOptData += element.text + '\n';
+        console.log(element);
+        this.addTagAtIndex(i);
       }
     }
   }
 
   onOptionChange(e: any) {
     this.selectedOption = e.target.value;
-    this.selectedOptData = this.optionsData[e.target.value] || '';
   }
 
-  onAdd() {
-    if (this.error) {
-      this.error = '';
-    }
-    if (this.selectedOptData) {
-      this.optionsData[this.selectedOption.nativeElement.value] =
-        this.selectedOptData;
-      console.log(this.optionsData);
-    } else {
-      this.error = 'You will have to select text from the Image.';
-    }
-    // this.optionsData[this.selectedOption.nativeElement.value] =
-    //     this.currentOptData;
-    //   console.log(this.optionsData);
-  }
   onSave() {
-    console.log(this.optionsData);
+    console.log(this.boxes);
+    this.uploadService.saveCsv(this.boxes);
+  }
+
+  removeBox(index: number) {
+    var currentTag = this.boxes[index].tag;
+    if (currentTag.startsWith('I') || currentTag.startsWith('S')) {
+      this.boxes[index].tag = 'O';
+      return;
+    }
+    this.boxes[index].tag = 'O';
+    let sameTag = [];
+    for (let j = 0; j < this.boxes.length; j++) {
+      if (this.boxes[j].tag.slice(2) == this.selectedOption) {
+        sameTag.push({ index: j, box: this.boxes[j] });
+      }
+    }
+    switch (sameTag.length) {
+      case 0:
+        break;
+      case 1:
+        sameTag[0].box.tag = 'S_' + this.selectedOption;
+        break;
+
+      default:
+        for (let k = 0; k < sameTag.length; k++) {
+          if (sameTag[k].box.tag.startsWith('I')) {
+            if (currentTag.startsWith('B')) {
+              sameTag[k].box.tag = 'B_' + this.selectedOption;
+            } else {
+              sameTag[k].box.tag = 'E_' + this.selectedOption;
+            }
+            break;
+          }
+        }
+        break;
+    }
+  }
+
+  sizesConvert(box: any) {
+    return {
+      left: (this.config.canvas_width * box.left) / this.config.img_width,
+      top: (this.config.canvas_height * box.top) / this.config.img_height,
+      width: (this.config.canvas_width * box.width) / this.config.img_width,
+      height: (this.config.canvas_height * box.height) / this.config.img_height,
+    };
+  }
+
+  addTagAtIndex(i: number) {
+    // get all boxes with same type
+    let sameTag = [];
+    for (let j = 0; j < this.boxes.length; j++) {
+      if (this.boxes[j].tag.slice(2) == this.selectedOption) {
+        sameTag.push({ index: j, box: this.boxes[j] });
+      }
+    }
+    // switch based on how many boxes in same tag
+    switch (sameTag.length) {
+      case 0:
+        this.boxes[i].tag = 'S_' + this.selectedOption;
+        break;
+      case 1:
+        sameTag[0].box.tag = 'B_' + this.selectedOption;
+        this.boxes[i].tag = 'E_' + this.selectedOption;
+        break;
+      default:
+        for (let k = 0; k < sameTag.length; k++) {
+          if (sameTag[k].box.tag.startsWith('E_')) {
+            this.boxes[sameTag[k].index].tag = 'I_' + this.selectedOption;
+            break;
+          }
+        }
+        this.boxes[i].tag = 'E_' + this.selectedOption;
+        break;
+    }
+    console.log(this.boxes);
+    // this.boxes.sort((a, b) => {
+    //   if (a.tag.startsWith('S')) {
+    //     return a;
+    //   }
+    //   if (b.tag.startsWith('S')) {
+    //     return b;
+    //   }
+    //   if (a.tag.startsWith('E')) {
+    //     return b;
+    //   }
+    //   if (b.tag.startsWith('E')) {
+    //     return a;
+    //   }
+    // });
+    console.log(this.boxes);
   }
 }

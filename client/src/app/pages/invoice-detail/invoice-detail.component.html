@@ -1,10 +1,10 @@
 <div class="container mt-5">
   <div class="row justify-content-center align-items-center">
     <div class="col-xl-8 col-md-12 text-center p-0 m-0">
-      <canvas #imgCanvas (click)="onOptionChange($event)" class="imgCanvas"></canvas>
+      <canvas #imgCanvas (click)="selectBox($event)" class="imgCanvas"></canvas>
     </div>
     <div class="col-4 p-2" style="height: 500px">
-      <select class="form-select" #selectedOption>
+      <select (change)="onOptionChange($event)" class="form-select">
         <option *ngFor="let item of optionsList" [value]="item">
           {{ item }}
         </option>
@@ -12,15 +12,23 @@
       <div class="bg-light mt-4 p-3 text-start h-75 border">
         <h1 class="fw-bold">Your Selections:-</h1>
         <hr />
-        <div class="output h-75">{{ selectedOptData }}</div>
+        <div class="output h-75">
+          <ng-container *ngFor="let box of boxes | sortArr; let i = index">
+            <div
+              class="output-text d-flex justify-content-between"
+              *ngIf="box.tag.slice(2) == selectedOption"
+            >
+              <div class="txt">{{ box.text }}</div>
+              <div class="tag">{{ box.tag.slice(0, 1) }}</div>
+              <div class="removebtn" (click)="removeBox(i)">X</div>
+            </div>
+          </ng-container>
+        </div>
       </div>
       <p class="text-danger" [hidden]="!error">{{ error }}</p>
-      <button (click)="onAdd()" class="btn btn-primary mt-2" type="button">
-        Add
-      </button>
       <button (click)="onSave()" class="btn btn-primary" type="button">
-      Save
-    </button>
+        Save
+      </button>
     </div>
   </div>
 </div>
