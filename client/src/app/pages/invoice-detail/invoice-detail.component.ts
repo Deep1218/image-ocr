@@ -14,7 +14,11 @@ import { UploadService } from 'src/app/upload.service';
 })
 export class InvoiceDetailComponent implements OnInit, AfterViewInit {
   @ViewChild('imgCanvas') canvas!: ElementRef;
+  @ViewChild('selectedOption') selectedOption!: ElementRef;
   serverUrl = 'http://localhost:3000/';
+  fileData: any;
+  error!: string;
+
   optionsList = [
     'Invoice Number',
     'Senders Name',
@@ -97,7 +101,19 @@ export class InvoiceDetailComponent implements OnInit, AfterViewInit {
   }
 
   onAdd() {
-    this.optionsData[this.selectedOption] = this.selectedOptData;
+    if (this.error) {
+      this.error = '';
+    }
+    if (this.currentOptData) {
+      this.optionsData[this.selectedOption.nativeElement.value] =
+        this.currentOptData;
+      console.log(this.optionsData);
+    } else {
+      this.error = 'You will have to select text from the Image.';
+    }
+    // this.optionsData[this.selectedOption.nativeElement.value] =
+    //     this.currentOptData;
+    //   console.log(this.optionsData);
   }
   onSave() {
     console.log(this.optionsData);
