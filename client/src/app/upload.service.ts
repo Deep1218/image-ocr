@@ -2903,4 +2903,12 @@ export class UploadService {
       this.route.navigate(['/invoice-detail']);
     });
   }
+
+  saveCsv(updatedObj: any) {
+    this.http
+      .post(`${this.apiUrl}/save`, { data: updatedObj })
+      .subscribe((data) => {
+        console.log(data);
+      });
+  }
 }
