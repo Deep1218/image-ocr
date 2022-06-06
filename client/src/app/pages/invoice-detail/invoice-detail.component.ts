@@ -22,7 +22,10 @@ export class InvoiceDetailComponent implements OnInit, AfterViewInit {
     });
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    console.log(this.fileData);
+  }
+
   ngAfterViewInit(): void {
     const canvas = this.canvas.nativeElement;
     const ctx = canvas.getContext('2d');

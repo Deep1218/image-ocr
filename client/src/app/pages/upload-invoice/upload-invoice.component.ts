@@ -9,7 +9,7 @@ import { UploadService } from 'src/app/upload.service';
 export class UploadInvoiceComponent implements OnInit {
   url: string = '';
   selectedFile!: File;
-
+  error = '';
   constructor(private uploadService: UploadService) {}
 
   ngOnInit(): void {}
@@ -29,6 +29,11 @@ export class UploadInvoiceComponent implements OnInit {
     console.log(this.selectedFile);
     const formData = new FormData();
     formData.append('invoice', this.selectedFile);
-    this.uploadService.upload(formData);
+    if (this.selectedFile) {
+      this.uploadService.upload(formData);
+    } else {
+      console.log('Please select the Invoice Image.');
+      this.error = 'Please select the Invoice Image.';
+    }
   }
 }

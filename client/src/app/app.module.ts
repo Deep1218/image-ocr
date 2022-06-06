@@ -8,15 +8,8 @@ import { UploadInvoiceComponent } from './pages/upload-invoice/upload-invoice.co
 import { InvoiceDetailComponent } from './pages/invoice-detail/invoice-detail.component';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    InvoiceDetailComponent,
-    UploadInvoiceComponent
-  ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule
-  ],
+  declarations: [AppComponent, InvoiceDetailComponent, UploadInvoiceComponent],
+  imports: [BrowserModule, AppRoutingModule, HttpClientModule],
   providers: [],
   bootstrap: [AppComponent],
 })
