@@ -13,11 +13,10 @@ app.use(express.static(__dirname + "/public"));
 app.use(cors({ credentials: true, origin: true }));
 app.use(cookieParser());
 app.use(express.json());
-console.log(__dirname);
 
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "./uploads");
+    cb(null, "./public/uploads");
   },
   filename: function (req, file, cb) {
     cb(null, file.originalname);
@@ -33,11 +32,15 @@ app.post("/upload", upload.single("invoice"), (req, res) => {
 
   // res.send({ msg: "ok" });
   // reading csv, converting to json and sends back response
-  const filePath = "./csv/invoice.csv";
+  const filePath = "./public/csv/invoice.csv";
   csv()
     .fromFile(filePath)
     .then((jsonObj) => {
-      res.send({ msg: "Success", data: jsonObj, invoicePath: req.file.path });
+      res.send({
+        msg: "Success",
+        data: jsonObj,
+        invoicePath: req.file.path.slice(7),
+      });
     });
 });
 
