@@ -30,7 +30,7 @@ export class InvoiceDetailComponent implements OnInit, AfterViewInit {
     'Total Amount',
     'Position 1',
   ];
-  selectedOption = this.optionsList[0];
+  // selectedOption = this.optionsList[0];
   selectedOptData = '';
 
   optionsData: any = {};
@@ -104,9 +104,9 @@ export class InvoiceDetailComponent implements OnInit, AfterViewInit {
     if (this.error) {
       this.error = '';
     }
-    if (this.currentOptData) {
+    if (this.selectedOptData) {
       this.optionsData[this.selectedOption.nativeElement.value] =
-        this.currentOptData;
+        this.selectedOptData;
       console.log(this.optionsData);
     } else {
       this.error = 'You will have to select text from the Image.';
