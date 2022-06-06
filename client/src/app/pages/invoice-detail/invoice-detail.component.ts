@@ -18,6 +18,7 @@ export class InvoiceDetailComponent implements OnInit, AfterViewInit {
   serverUrl = 'http://localhost:3000/';
   fileData: any;
   error!: string;
+
   optionsList = [
     'Invoice Number',
     'Senders Name',
@@ -29,12 +30,14 @@ export class InvoiceDetailComponent implements OnInit, AfterViewInit {
     'Total Amount',
     'Position 1',
   ];
+  selectedOption = this.optionsList[0];
+  selectedOptData = '';
 
-  currentOptData = '';
   optionsData: any = {};
   boxObj: any[] = [];
 
   constructor(private uploadService: UploadService) {}
+
   ngOnInit(): void {}
   ngAfterViewInit(): void {
     this.uploadService.fileData.subscribe((data: any) => {
@@ -43,9 +46,7 @@ export class InvoiceDetailComponent implements OnInit, AfterViewInit {
         width: 750,
         height: 1050,
       };
-      this.fileData = data;
       let fileUrl = this.serverUrl + data.invoicePath.replace('\\', '/');
-      console.log(fileUrl);
       const canvas = this.canvas.nativeElement;
       const ctx = canvas.getContext('2d');
       canvas.width = canvasSize.width;
@@ -58,7 +59,6 @@ export class InvoiceDetailComponent implements OnInit, AfterViewInit {
         var imgWidth = newImg.width;
         canvas.style.backgroundImage = 'url(' + fileUrl + ')';
         const boxes = data.data;
-        console.log(boxes);
 
         for (let i = 0; i < boxes.length; i++) {
           const element = boxes[i];
@@ -90,10 +90,14 @@ export class InvoiceDetailComponent implements OnInit, AfterViewInit {
         clickY > element.top &&
         clickY <= element.top + element.boxHeight
       ) {
-        console.log(element);
-        this.currentOptData += element.text + '\n';
+        this.selectedOptData += element.text + '\n';
       }
     }
+  }
+
+  onOptionChange(e: any) {
+    this.selectedOption = e.target.value;
+    this.selectedOptData = this.optionsData[e.target.value] || '';
   }
 
   onAdd() {
@@ -110,5 +114,8 @@ export class InvoiceDetailComponent implements OnInit, AfterViewInit {
     // this.optionsData[this.selectedOption.nativeElement.value] =
     //     this.currentOptData;
     //   console.log(this.optionsData);
+  }
+  onSave() {
+    console.log(this.optionsData);
   }
 }
