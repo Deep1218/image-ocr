@@ -1,24 +1,12 @@
 canvas {
-  width: 750;
+  width: 750px;
   height: 1050px;
   background-size: 100% 100%;
 }
-
-.container {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  flex-wrap: wrap;
-}
-.container .side {
-  margin-left: 50px;
-  width: 300px;
-  border: 1px solid black;
-  border-radius: 12px;
-  min-height: 500px;
-}
 .output {
+  font-size: 22px;
+  font-weight: 600;
+  margin-top: 2rem;
   white-space: pre;
+  overflow: auto;
 }

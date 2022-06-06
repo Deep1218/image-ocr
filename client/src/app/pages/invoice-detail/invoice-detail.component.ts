@@ -15,8 +15,9 @@ import { UploadService } from 'src/app/upload.service';
 export class InvoiceDetailComponent implements OnInit, AfterViewInit {
   @ViewChild('imgCanvas') canvas!: ElementRef;
   @ViewChild('selectedOption') selectedOption!: ElementRef;
+  serverUrl = 'http://localhost:3000/';
   fileData: any;
-
+  error!: string;
   optionsList = [
     'Invoice Number',
     'Senders Name',
@@ -31,10 +32,9 @@ export class InvoiceDetailComponent implements OnInit, AfterViewInit {
 
   currentOptData = '';
   optionsData: any = {};
-
-  serverUrl = 'http://localhost:3000/';
-  constructor(private uploadService: UploadService) {}
   boxObj: any[] = [];
+
+  constructor(private uploadService: UploadService) {}
   ngOnInit(): void {}
   ngAfterViewInit(): void {
     this.uploadService.fileData.subscribe((data: any) => {
@@ -79,9 +79,36 @@ export class InvoiceDetailComponent implements OnInit, AfterViewInit {
     });
   }
 
+  selectBox(e: any) {
+    const clickX = e.offsetX;
+    const clickY = e.offsetY;
+    for (let i = 0; i < this.boxObj.length; i++) {
+      const element = this.boxObj[i];
+      if (
+        clickX > element.left &&
+        clickX <= element.left + element.boxWidth &&
+        clickY > element.top &&
+        clickY <= element.top + element.boxHeight
+      ) {
+        console.log(element);
+        this.currentOptData += element.text + '\n';
+      }
+    }
+  }
+
   onAdd() {
-    this.optionsData[this.selectedOption.nativeElement.value] =
-      this.currentOptData;
-    console.log(this.optionsData);
+    if (this.error) {
+      this.error = '';
+    }
+    if (this.currentOptData) {
+      this.optionsData[this.selectedOption.nativeElement.value] =
+        this.currentOptData;
+      console.log(this.optionsData);
+    } else {
+      this.error = 'You will have to select text from the Image.';
+    }
+    // this.optionsData[this.selectedOption.nativeElement.value] =
+    //     this.currentOptData;
+    //   console.log(this.optionsData);
   }
 }

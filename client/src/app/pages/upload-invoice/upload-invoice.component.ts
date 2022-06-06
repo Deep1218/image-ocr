@@ -15,6 +15,7 @@ export class UploadInvoiceComponent implements OnInit {
   ngOnInit(): void {}
 
   previewFile(e: any) {
+    this.error = '';
     console.log(e.target.files[0]);
     if (e.target.files) {
       this.selectedFile = e.target.files[0];
@@ -32,7 +33,6 @@ export class UploadInvoiceComponent implements OnInit {
     if (this.selectedFile) {
       this.uploadService.upload(formData);
     } else {
-      console.log('Please select the Invoice Image.');
       this.error = 'Please select the Invoice Image.';
     }
   }

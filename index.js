@@ -1,5 +1,4 @@
 const PORT = process.env.PORT || 3000;
-const path = require("path");
 const express = require("express");
 const multer = require("multer");
 const cookieParser = require("cookie-parser");
@@ -23,25 +22,28 @@ var storage = multer.diskStorage({
   },
 });
 const upload = multer({ storage });
-// var upload = multer({ storage });
 
 // routes
 app.post("/upload", upload.single("invoice"), (req, res) => {
-  console.log(req.file.path);
-  //TODO save img file and process through python...
+  try {
+    console.log(req.file.path);
+    //TODO save img file and process through python...
 
-  // res.send({ msg: "ok" });
-  // reading csv, converting to json and sends back response
-  const filePath = "./public/csv/invoice.csv";
-  csv()
-    .fromFile(filePath)
-    .then((jsonObj) => {
-      res.send({
-        msg: "Success",
-        data: jsonObj,
-        invoicePath: req.file.path.slice(7),
+    // res.send({ msg: "ok" });
+    // reading csv, converting to json and sends back response
+    const filePath = "./public/csv/invoice.csv";
+    csv()
+      .fromFile(filePath)
+      .then((jsonObj) => {
+        res.send({
+          msg: "Success",
+          data: jsonObj,
+          invoicePath: req.file.path.slice(7),
+        });
       });
-    });
+  } catch (error) {
+    res.send({ msg: "Error", error });
+  }
 });
 
 // start server on port 3000

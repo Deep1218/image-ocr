@@ -1,17 +1,23 @@
-<div class="container">
-  <div class="invoice-img">
-    <canvas #imgCanvas (click)="selectBox($event)" class="imgCanvas"></canvas>
-  </div>
-  <div class="side">
-    <select #selectedOption>
-      <option *ngFor="let item of optionsList" [value]="item">
-        {{ item }}
-      </option>
-    </select>
-    <div class="values">
-      <h1>Your Selections</h1>
-      <div class="output">{{ currentOptData }}</div>
+<div class="container mt-5">
+  <div class="row justify-content-center align-items-center">
+    <div class="col-xl-8 col-md-12 text-center p-0 m-0">
+      <canvas #imgCanvas (click)="selectBox($event)" class="imgCanvas"></canvas>
     </div>
-    <button (click)="onAdd()" class="btn btn-primary" type="button">Add</button>
+    <div class="col-4 p-2" style="height: 500px">
+      <select class="form-select" #selectedOption>
+        <option *ngFor="let item of optionsList" [value]="item">
+          {{ item }}
+        </option>
+      </select>
+      <div class="bg-light mt-4 p-3 text-start h-75 border">
+        <h1 class="fw-bold">Your Selections:-</h1>
+        <hr />
+        <div class="output h-75">{{ currentOptData }}</div>
+      </div>
+      <p class="text-danger" [hidden]="!error">{{ error }}</p>
+      <button (click)="onAdd()" class="btn btn-primary mt-2" type="button">
+        Add
+      </button>
+    </div>
   </div>
 </div>
