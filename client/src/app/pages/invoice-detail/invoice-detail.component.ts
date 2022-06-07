@@ -40,11 +40,14 @@ export class InvoiceDetailComponent implements OnInit, AfterViewInit {
 
   constructor(private uploadService: UploadService) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.uploadService.getData();
+  }
   ngAfterViewInit(): void {
     this.uploadService.fileData.subscribe((data: any) => {
       if (!data) return;
-      let fileUrl = this.serverUrl + data.invoicePath.replace('\\', '/');
+      console.log(data);
+      let fileUrl = this.serverUrl + data.imgFilePath.replace('\\', '/');
       const canvas = this.canvas.nativeElement;
       const ctx = canvas.getContext('2d');
       canvas.width = this.config.canvas_width;
@@ -99,6 +102,9 @@ export class InvoiceDetailComponent implements OnInit, AfterViewInit {
   onSave() {
     console.log(this.boxes);
     this.uploadService.saveCsv(this.boxes);
+  }
+  onNext() {
+    this.uploadService.getData();
   }
 
   removeBox(index: number) {
@@ -172,21 +178,5 @@ export class InvoiceDetailComponent implements OnInit, AfterViewInit {
         this.boxes[i].tag = 'E_' + this.selectedOption;
         break;
     }
-    console.log(this.boxes);
-    // this.boxes.sort((a, b) => {
-    //   if (a.tag.startsWith('S')) {
-    //     return a;
-    //   }
-    //   if (b.tag.startsWith('S')) {
-    //     return b;
-    //   }
-    //   if (a.tag.startsWith('E')) {
-    //     return b;
-    //   }
-    //   if (b.tag.startsWith('E')) {
-    //     return a;
-    //   }
-    // });
-    console.log(this.boxes);
   }
 }
