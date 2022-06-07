@@ -28,7 +28,7 @@ export class UploadService {
 
   saveCsv(updatedObj: any) {
     this.http
-      .post(`${this.apiUrl}/save/${this.currentIndex}`, { data: updatedObj })
+      .post(`${this.apiUrl}/save`, { data: updatedObj })
       .subscribe((data) => {
         console.log(data);
       });
