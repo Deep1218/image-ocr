@@ -4,7 +4,7 @@ const express = require("express");
 const multer = require("multer");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
-const csv = require("csvtojson");
+const csvToJson = require("csvtojson");
 const { Parser } = require("json2csv");
 
 // configuration
@@ -48,14 +48,39 @@ app.post("/upload", upload.single("invoice"), (req, res) => {
   }
 });
 
-app.post("/save", (req, res) => {
-  let jsonObj = req.body.data;
-  if (!jsonObj) return res.send({ msg: "data should not be empty" });
-  const filePath = "/output/invoice.csv";
-  const json2csvParser = new Parser();
-  const csv = json2csvParser.parse(jsonObj);
-  fs.writeFileSync("./public" + filePath, csv);
-  res.send({ msg: "successfully created csv", filePath });
+app.post("/save/:index", (req, res) => {
+  const index = req.params.index;
+  const jsonObj = req.body.data;
+  if (!index || !jsonObj)
+    return res.send({ msg: "Please provide json and index." });
+
+  const csvFilePath = `/output/${index}.csv`;
+  const csvText = new Parser().parse(jsonObj);
+  fs.writeFileSync("./public" + csvFilePath, csvText);
+
+  res.send({ msg: "successfully created csv", csvFilePath });
+});
+
+app.get("/get-data/:index", (req, res) => {
+  const index = req.params.index;
+  console.log(index);
+  if (!index) return res.send({ msg: "Please provide index." });
+  try {
+    const csvFilePath = `./public/csv/${index}.csv`;
+    const imgFilePath = `./uploads/${index}.jpg`;
+
+    csvToJson()
+      .fromFile(csvFilePath)
+      .then((jsonObj) => {
+        res.send({
+          msg: "Success",
+          data: jsonObj,
+          imgFilePath,
+        });
+      });
+  } catch (error) {
+    res.send({ msg: "Error", error });
+  }
 });
 
 // start server on port 3000
