@@ -49,16 +49,17 @@ app.post("/upload", upload.single("invoice"), (req, res) => {
 });
 
 app.post("/save/:index", (req, res) => {
-  const index = req.params.index;
+  const csvFilePath = "./public/output/invoice.csv";
   const jsonObj = req.body.data;
-  if (!index || !jsonObj)
-    return res.send({ msg: "Please provide json and index." });
-
-  const csvFilePath = `/output/${index}.csv`;
-  const csvText = new Parser().parse(jsonObj);
-  fs.writeFileSync("./public" + csvFilePath, csvText);
-
-  res.send({ msg: "successfully created csv", csvFilePath });
+  if (!jsonObj) return res.send({ msg: "Please provide json." });
+  let csvText = new Parser().parse(jsonObj);
+  if (fs.existsSync(csvFilePath)) {
+    let csvArr = csvText.split("\n");
+    csvArr.shift();
+    csvText = "\n" + csvArr.join("\n");
+  }
+  fs.appendFileSync(csvFilePath, csvText);
+  res.send({ msg: "successfully created csv" });
 });
 
 app.get("/get-data/:index", (req, res) => {
