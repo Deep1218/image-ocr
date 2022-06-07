@@ -1,9 +1,11 @@
 const PORT = process.env.PORT || 3000;
+const fs = require("fs");
 const express = require("express");
 const multer = require("multer");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const csv = require("csvtojson");
+const { Parser } = require("json2csv");
 
 // configuration
 const app = express();
@@ -44,6 +46,16 @@ app.post("/upload", upload.single("invoice"), (req, res) => {
   } catch (error) {
     res.send({ msg: "Error", error });
   }
+});
+
+app.post("/save", (req, res) => {
+  let jsonObj = req.body.data;
+  if (!jsonObj) return res.send({ msg: "data should not be empty" });
+  const filePath = "/output/invoice.csv";
+  const json2csvParser = new Parser();
+  const csv = json2csvParser.parse(jsonObj);
+  fs.writeFileSync("./public" + filePath, csv);
+  res.send({ msg: "successfully created csv", filePath });
 });
 
 // start server on port 3000
