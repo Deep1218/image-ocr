@@ -46,7 +46,6 @@ export class InvoiceDetailComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     this.uploadService.fileData.subscribe((data: any) => {
       if (!data) return;
-      console.log(data);
       let fileUrl = this.serverUrl + data.imgFilePath.replace('\\', '/');
       const canvas = this.canvas.nativeElement;
       const ctx = canvas.getContext('2d');
@@ -90,7 +89,6 @@ export class InvoiceDetailComponent implements OnInit, AfterViewInit {
         clickY > top &&
         clickY <= top + height
       ) {
-        console.log(element);
         this.addTagAtIndex(i);
       }
     }
@@ -101,7 +99,6 @@ export class InvoiceDetailComponent implements OnInit, AfterViewInit {
   }
 
   onSave() {
-    console.log('onSave', this.boxes);
     this.uploadService.saveCsv(this.boxes);
   }
   onNext() {

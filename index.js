@@ -29,7 +29,6 @@ const upload = multer({ storage });
 // routes
 app.post("/upload", upload.single("invoice"), (req, res) => {
   try {
-    console.log(req.file.path);
     //TODO save img file and process through python...
 
     // res.send({ msg: "ok" });
@@ -49,7 +48,7 @@ app.post("/upload", upload.single("invoice"), (req, res) => {
   }
 });
 
-app.post("/save/:index", (req, res) => {
+app.post("/save", (req, res) => {
   const csvFilePath = "./public/output/invoice.csv";
   const jsonObj = req.body.data;
   if (!jsonObj) return res.send({ msg: "Please provide json." });
@@ -65,7 +64,6 @@ app.post("/save/:index", (req, res) => {
 
 app.get("/get-data/:index", (req, res) => {
   const index = req.params.index;
-  console.log(index);
   if (!index) return res.send({ msg: "Please provide index." });
   try {
     const csvFilePath = `./public/csv/${index}.csv`;
