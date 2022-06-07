@@ -1,37 +1,66 @@
-<div class="container mt-5">
-  <div class="row justify-content-center align-items-center">
-    <div class="col-xl-8 col-md-12 text-center p-0 m-0">
+<div class="container-fuild p-0 m-0 border">
+  <div class="row">
+    <div class="col-xl-5 col-md-12 p-0 ms-5 border">
       <canvas #imgCanvas (click)="selectBox($event)" class="imgCanvas"></canvas>
     </div>
-    <div class="col-4 p-2" style="height: 500px">
-      <select (change)="onOptionChange($event)" class="form-select">
-        <option *ngFor="let item of optionsList" [value]="item">
-          {{ item }}
-        </option>
-      </select>
+    <div class="col-xl-6 col-md-12 p-5 mt-5" style="height: 500px">
+      <label for="" class="form-label">Select label:-</label>
+      <div class="d-flex">
+        <select (change)="onOptionChange($event)" class="form-select me-2">
+          <option *ngFor="let item of optionsList" [value]="item">
+            {{ item }}
+          </option>
+        </select>
+        <button (click)="onSave()" class="btn btn-primary ms-2" type="button">
+          Save
+        </button>
+      </div>
       <div class="bg-light mt-4 p-3 text-start h-75 border">
-        <h1 class="fw-bold">Your Selections:-</h1>
+        <h2 class="fw-bold">Your Selections:-</h2>
         <hr />
         <div class="output h-75">
           <ng-container *ngFor="let box of boxes | sortArr; let i = index">
             <div
-              class="output-text d-flex justify-content-between"
+              class="output-text d-flex justify-content-evenly text-start bg-white shadow-sm rounded ps-2 my-1"
               *ngIf="box.tag.slice(2) == selectedOption"
             >
-              <div class="txt">{{ box.text }}</div>
-              <div class="tag">{{ box.tag.slice(0, 1) }}</div>
-              <div class="removebtn" (click)="removeBox(i)">X</div>
+              <div class="txt w-100">{{ box.text }}</div>
+              <div class="tag text-success w-100">
+                {{ box.tag.slice(0, 1) }}
+              </div>
+              <div class="removebtn mx-2" role="button" (click)="removeBox(i)">
+                X
+              </div>
             </div>
           </ng-container>
         </div>
       </div>
       <p class="text-danger" [hidden]="!error">{{ error }}</p>
-      <button (click)="onSave()" class="btn btn-primary" type="button">
-        Save
+
+      <button (click)="onNext()" class="btn btn-success mt-3" type="button">
+        Next
       </button>
-      <button (click)="onNext()" class="btn btn-primary" type="button">
-        next
-      </button>
+      <ul class="mt-4">
+        <li>
+          <strong>Next</strong> button will generate the output csv of the
+          current image.
+          <ul>
+            <li>
+              <mark
+                >You will not be able to go back so be carefull will
+                saving!</mark
+              >
+            </li>
+            <li>
+              <em>Output csv will at this location image-ocr/public/output/</em>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <strong>Save</strong> button will map the currently selected label
+          will the select text from the image.
+        </li>
+      </ul>
     </div>
   </div>
 </div>

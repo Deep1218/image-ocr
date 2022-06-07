@@ -69,6 +69,7 @@ export class InvoiceDetailComponent implements OnInit, AfterViewInit {
           const element = this.boxes[i];
           const { left, top, width, height } = this.sizesConvert(element);
           ctx.beginPath();
+          ctx.strokeStyle = '#FF0000';
           ctx.rect(left, top, width, height);
           ctx.stroke();
         }
@@ -100,7 +101,7 @@ export class InvoiceDetailComponent implements OnInit, AfterViewInit {
   }
 
   onSave() {
-    console.log(this.boxes);
+    console.log('onSave', this.boxes);
     this.uploadService.saveCsv(this.boxes);
   }
   onNext() {

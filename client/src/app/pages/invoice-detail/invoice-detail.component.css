@@ -10,3 +10,10 @@ canvas {
   white-space: pre;
   overflow: auto;
 }
+.removebtn {
+  color: red;
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+}
+.removebtn:hover {
+  color: rgb(206, 22, 22);
+}
