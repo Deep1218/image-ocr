@@ -11,6 +11,7 @@ const { Parser } = require("json2csv");
 const app = express();
 require("dotenv").config();
 app.use(express.static(__dirname + "/public"));
+app.use(express.static(__dirname + "/client/dist/client"));
 app.use(cors({ credentials: true, origin: true }));
 app.use(cookieParser());
 app.use(express.json());
