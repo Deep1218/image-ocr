@@ -11,9 +11,6 @@
             {{ item }}
           </option>
         </select>
-        <button (click)="onSave()" class="btn btn-primary ms-2" type="button">
-          Save
-        </button>
       </div>
       <div class="bg-light mt-4 p-3 text-start h-75 border">
         <h2 class="fw-bold">Your Selections:-</h2>
@@ -36,10 +33,14 @@
         </div>
       </div>
       <p class="text-danger" [hidden]="!error">{{ error }}</p>
-
-      <button (click)="onNext()" class="btn btn-success mt-3" type="button">
-        Next
-      </button>
+      <div class="d-flex justfy-content-between">
+        <button (click)="onSave()" class="btn btn-primary ms-2" type="button">
+          Save
+        </button>
+        <button (click)="onNext()" class="btn btn-success mt-3" type="button">
+          Next
+        </button>
+      </div>
       <ul class="mt-4">
         <li>
           <strong>Next</strong> button will generate the output csv of the
