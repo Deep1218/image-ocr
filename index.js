@@ -5,6 +5,9 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const csv = require("csvtojson");
 
+const { createWorker, PSM, OEM } = require("tesseract.js");
+const worker = createWorker({ logger: (m) => console.log(m) });
+
 // configuration
 const app = express();
 require("dotenv").config();
@@ -24,10 +27,22 @@ var storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // routes
-app.post("/upload", upload.single("invoice"), (req, res) => {
+app.post("/upload", upload.single("invoice"), async (req, res) => {
   try {
-    console.log(req.file.path);
+    console.log(req.file.path.slice(7));
     //TODO save img file and process through python...
+    await worker.load();
+    await worker.loadLanguage("eng");
+    await worker.initialize("eng");
+    await worker.setParameters({
+      tessedit_pageseg_mode: PSM.AUTO,
+      tessjs_create_box: "1",
+    });
+    const { data: block } = await worker.recognize(
+      "./public/uploads/invoice.jpg"
+    );
+    console.log(block);
+    await worker.terminate();
 
     // res.send({ msg: "ok" });
     // reading csv, converting to json and sends back response
